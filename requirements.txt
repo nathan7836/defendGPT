@@ -1,0 +1,10 @@
+# Dépendances principales pour l'API Flask, les scripts de préparation et l'entraînement
+# Installez la variante PyTorch adaptée à votre environnement CUDA (cf. README).
+torch>=2.2
+flask>=3.0
+requests>=2.31
+tokenizers>=0.15
+datasets>=2.19
+langdetect>=1.0.9
+yt-dlp>=2024.3.10
+tqdm>=4.66

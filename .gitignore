@@ -1,0 +1,17 @@
+*.Zone.Identifier
+__pycache__/
+
+# Raw data exports (YouTube, LinkedIn, Instagram, etc.)
+data/
+!data/README.md
+
+# Cleaned corpora used for training/tokenizer
+data_clean/
+!data_clean/README.md
+
+# Model artefacts (checkpoints, tokenizers, run logs)
+trained_models/
+
+# Legacy raw subtitle dumps (deprecated layout)
+youtube-subtitile/
+youtube-subtitile-plain/
