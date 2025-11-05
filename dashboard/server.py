@@ -736,6 +736,37 @@ def compute_data_catalog() -> Dict[str, Any]:
         if entry:
             catalog["oscar"]["last_cleaned_at"] = entry.get("completed_at")
 
+    instructions_dir = DATA_CLEAN_ROOT / "instructions"
+    if instructions_dir.exists():
+        jsonl_files = list(instructions_dir.glob("*.jsonl"))
+        size = sum(path.stat().st_size for path in jsonl_files)
+        latest_file = max(jsonl_files, key=lambda p: p.stat().st_mtime) if jsonl_files else None
+        latest_summary_path = instructions_dir / "latest_summary.json"
+        summary: Dict[str, Any] = {}
+        if latest_summary_path.exists():
+            try:
+                summary = json.loads(latest_summary_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                summary = {}
+        latest_pairs = summary.get("pairs")
+        if not isinstance(latest_pairs, int):
+            latest_pairs = _count_lines(latest_file) if latest_file else 0
+        catalog["instructions"] = {
+            "size_bytes": size,
+            "counts": {
+                "pairs": latest_pairs,
+                "files": len(jsonl_files),
+            },
+        }
+        if latest_file is not None:
+            catalog["instructions"]["latest_file"] = str(latest_file.name)
+            catalog["instructions"]["updated_at"] = to_iso(latest_file.stat().st_mtime)
+        if summary.get("copied_at"):
+            catalog["instructions"]["copied_at"] = summary["copied_at"]
+        entry = history.get("instructions")
+        if entry:
+            catalog["instructions"]["last_cleaned_at"] = entry.get("completed_at")
+
     return catalog
 
 

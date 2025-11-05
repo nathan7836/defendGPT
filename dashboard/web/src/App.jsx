@@ -89,6 +89,7 @@ const DATA_DIR_PATHS = {
   fineweb: 'data_clean/fineweb_fr',
   bloom_lm: 'data_clean/bloom_lm',
   oscar: 'data_clean/oscar_fr',
+  instructions: 'data_clean/instructions',
 };
 
 const DEFAULT_TOKENIZER_CONFIG = {
@@ -313,6 +314,13 @@ const DATA_TASKS = [
       return payload;
     },
   },
+  {
+    key: 'instructions',
+    title: 'Jeu de données Instructions',
+    description: 'Consomme le dataset généré par dataset_gen.py et synchronisé dans DefendGPT.',
+    icon: '🧾',
+    disabled: true,
+  },
 ];
 
 function progressRatio(details) {
@@ -407,6 +415,14 @@ function DataPreparationPanel({ statuses, catalog, history, onStart }) {
             }
             if (details.output_path) {
               metaRows.push({ label: 'Sortie', value: details.output_path });
+            }
+          } else if (task.key === 'instructions') {
+            if (catalogInfo.latest_file) {
+              metaRows.push({ label: 'Dernier fichier', value: catalogInfo.latest_file });
+            }
+            const syncedAt = catalogInfo.updated_at || catalogInfo.copied_at;
+            if (syncedAt) {
+              metaRows.push({ label: 'Synchronisé', value: formatDate(syncedAt) });
             }
           }
           if (historyEntry?.completed_at) {
